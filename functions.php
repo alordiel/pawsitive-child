@@ -1,4 +1,10 @@
 <?php
+
+define( 'PAW_ABS', __DIR__ );
+define( 'PAW_URL', get_stylesheet_directory_uri() );
+
+include_once ('woocommerce.php');
+
 function my_theme_enqueue_styles() {
 
     $parent_style = 'parent-style';
@@ -11,4 +17,4 @@ function my_theme_enqueue_styles() {
     );
 }
 add_action( 'wp_enqueue_scripts', 'my_theme_enqueue_styles' );
-?>
+

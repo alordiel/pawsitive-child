@@ -1,0 +1,110 @@
+#donation-organization-container {
+  font-size: 16px;
+  margin-top: 30px;
+}
+
+#donation-organization-container h3 {
+  font-size: 22px;
+}
+
+#donation_organization_field {
+  display: none;
+}
+
+.fa-own.fa-spin {
+  animation: fa-spin 2s linear infinite;
+  width: 30px;
+  height: 30px;
+  margin: 0 auto;
+  display: block;
+}
+
+.single-organisation .organization-logo-ds {
+  border: 1px solid #cdcdcc;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.selected-organization .organization-logo-ds {
+  border: 2px solid #00a0d2;
+}
+
+@-webkit-keyframes fa-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg)
+  }
+  to {
+    -webkit-transform: rotate(1turn);
+    transform: rotate(1turn)
+  }
+}
+
+@keyframes fa-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg)
+  }
+  to {
+    -webkit-transform: rotate(1turn);
+    transform: rotate(1turn)
+  }
+}
+
+/* Tooltip */
+
+.organization-tooltip {
+  background-color: #333;
+  color: white;
+  border-radius: 4px;
+  font-size: 13px;
+  width: 300px;
+  line-height: 20px;
+  padding: 20px 15px;
+  display: none;
+}
+
+.organization-tooltip h4 {
+  margin: 0;
+}
+
+.organization-tooltip[data-show] {
+  display: block;
+}
+
+.tooltip-arrow,
+.tooltip-arrow::before {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  z-index: 9;
+}
+
+.tooltip-arrow::before {
+  content: '';
+  transform: rotate(45deg);
+  background: #e22323;
+}
+
+
+.tooltip-arrow::before {
+  content: '';
+  transform: rotate(45deg);
+  background: #333;
+}
+
+.organization-tooltip[data-popper-placement^='top'] > #arrow {
+  bottom: -4px;
+}
+
+.organization-tooltip[data-popper-placement^='bottom'] > #arrow {
+  top: -4px;
+}
+
+.organization-tooltip[data-popper-placement^='left'] > #arrow {
+  right: -4px;
+}
+
+.organization-tooltip[data-popper-placement^='right'] > #arrow {
+  left: -4px;
+}
