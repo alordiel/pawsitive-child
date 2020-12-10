@@ -11,7 +11,7 @@ function paw_custom_checkout_field_order($checkout)
 	$charity_total = 0;
 	foreach ($cart_products as $product) {
 		$post_id = !empty($product['variation_id']) ? $product['variation_id'] : $product['product_id'];
-		$charity_total += (float)get_post_meta($post_id, 'charity_part', true);
+		$charity_total += (float) get_post_meta($post_id, 'charity_part', true) * $product['quantity'];
 	}
 	$charity_total = number_format($charity_total, 2);
 	echo '<p>'. sprintf(__("The amount of %s € from your order will go to one of the organizations below. Please click on any of the logos to reveal more information about the organizations. A pop up will open with the detainls. To confirm selected organization click the 'select' button from the pop up.  Thank you.", 'paw'), $charity_total) . '</p>';
