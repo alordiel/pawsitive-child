@@ -6,37 +6,24 @@
 add_action('woocommerce_after_order_notes', 'paw_custom_checkout_field');
 function paw_custom_checkout_field($checkout)
 {
-	$organizations = [
-		['key' => '3234', 'org' => 'ARS', 'link' => 'https://example.com', 'img' => 'https://arsofia.com/wp-content/themes/arsofiav6.0/images/arsv5logo.png', 'desc' => 'Animal Rescue Sofia is a Bulgarian organization working to solve the stray dog and cats problem in Sofia. ',],
-		['key' => '234', 'org' => 'ЕкоОбщностс', 'link' => 'https://example.com', 'img' => 'https://bepf-bg.org/bepf2015/wp-content/themes/ecosociety/lib/images/site-logo.png', 'desc' => 'Фондация „ЕкоОбщност допринася за устойчиво развитие на жизнената среда като вдъхновява и изгражда пълноценно, отговорно отношение и действия на човека към природата.',],
-		['key' => '241445', 'org' => 'Човешката библиотека', 'link' => 'https://example.com', 'img' => 'https://www.shadowdance.info/magazine/wp-content/themes/combomag/images/ShadowDance-logo-glow-1.png', 'desc' => 'The Human Library Foundation is a non-profit association of Bulgarian writers, translators and avid readers whose mission is to promote human-evolving fiction both in Bulgaria and around the world.',],
-	];
-
-	$options = [];
-	foreach ($organizations as $org) {
-		$options[$org['key']] = json_encode([
-			'name' => $org['org'],
-			'img' => $org['img'],
-			'desc' => $org['desc'],
-			'link' => $org['link'],
-			'id' => $org['key'],
-		]);
-	}
-
 	echo '<div id="donation-organization-container"><h3>' . __('Select donation organization', 'paw') . '</h3>';
-	woocommerce_form_field('donation_organization', array(
-		'type' => 'radio',
-		'class' => array(
-			'donation-organizations'
-		),
-		'options' => $options,
-		'required' => true,
-		'label' => __('Select the donation organization', 'paw'),
-		'placeholder' => __('Select organization', 'paw'),
-	),
 
-		$checkout->get_value('donation_organization'));
-	include_once('checkout-page/script-and-style.php');
+	woocommerce_form_field(
+		'donation_organization',
+		array(
+			'type' => 'radio',
+			'class' => array(
+				'donation-organizations'
+			),
+			'required' => true,
+			'label' => __('Select the donation organization', 'paw'),
+			'placeholder' => __('Select organization', 'paw'),
+		),
+		$checkout->get_value('donation_organization')
+	);
+
+	include_once 'checkout-page/checkout-organizations.php';
+
 	echo '</div>';
 
 }
@@ -71,8 +58,8 @@ function paw_custom_checkout_field_update_order_meta($order_id)
 /**
  * Enqueue styles and scripts for checkout page
  */
-add_action('wp_enqueue_scripts', 'paw_organizations_checkout_page_scripts_and_styles');
-function paw_organizations_checkout_page_scripts_and_styles()
+add_action('wp_enqueue_scripts', 'paw_organizations_checkout_page_scripts_and_styles1');
+function paw_organizations_checkout_page_scripts_and_styles1()
 {
 	if (!is_checkout()) {
 		return;
@@ -85,11 +72,54 @@ function paw_organizations_checkout_page_scripts_and_styles()
 		filemtime(PAW_ABS . '/assets/checkout-organizations.css')
 	);
 
-	wp_enqueue_script('paw_popper_js', PAW_URL . '/assets/popper.min.js', 'jquery', '2.5.4');
 	wp_enqueue_script(
 		'paw_checkout_organizations_style',
 		PAW_URL . '/assets/checkout-organizations.js',
-		'paw_popper_js',
+		'jquery',
 		filemtime(PAW_ABS . '/assets/checkout-organizations.js')
 	);
+}
+
+
+
+
+// Add Variation Settings
+add_action( 'woocommerce_product_after_variable_attributes', 'hrx_variation_settings_fields', 10, 3 );
+
+// Save Variation Settings
+add_action( 'woocommerce_save_product_variation', 'hrx_save_variation_settings_fields', 10, 2 );
+
+/**
+ * Create new fields for variations
+ *
+*/
+function hrx_variation_settings_fields( $loop, $variation_data, $variation ) {
+
+	// Text Field
+	woocommerce_wp_text_input(
+		array(
+			'id'          => '_print_file_link[' . $variation->ID . ']',
+			'label'       => __( 'Print File Link', 'woocommerce' ),
+			'placeholder' => 'http://',
+			'desc_tip'    => 'true',
+			'description' => __( 'Add your print file link here', 'woocommerce' ),
+			'value'       => get_post_meta( $variation->ID, '_print_file_link', true )
+		)
+	);
+
+}
+
+/**
+ * Save new fields for variations
+ *
+*/
+function hrx_save_variation_settings_fields( $post_id ) {
+
+	// Text Field
+	$print_file_link = $_POST['_print_file_link'][ $post_id ];
+	if( ! empty( $print_file_link ) ) {
+		update_post_meta( $post_id, '_print_file_link', esc_attr( $print_file_link ) );
+	}
+
+
 }

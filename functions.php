@@ -3,7 +3,8 @@
 define( 'PAW_ABS', __DIR__ );
 define( 'PAW_URL', get_stylesheet_directory_uri() );
 
-include_once ('woocommerce.php');
+include_once 'woocommerce.php';
+include_once 'checkout-page/cpt-organizations.php';
 
 function my_theme_enqueue_styles() {
 
