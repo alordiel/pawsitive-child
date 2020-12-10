@@ -3,11 +3,18 @@
  * Add custom field to the checkout page
  */
 
-add_action('woocommerce_after_order_notes', 'paw_custom_checkout_field');
-function paw_custom_checkout_field($checkout)
+add_action('woocommerce_after_order_notes', 'paw_custom_checkout_field_order');
+function paw_custom_checkout_field_order($checkout)
 {
-	echo '<div id="donation-organization-container"><h3>' . __('Select donation organization', 'paw') . '</h3>';
-
+	echo '<div id="donation-organization-container"><h3>' . __('Select charity organization', 'paw') . '</h3>';
+	$cart_products = WC()->cart->get_cart();
+	$charity_total = 0;
+	foreach ($cart_products as $product) {
+		$post_id = !empty($product['variation_id']) ? $product['variation_id'] : $product['product_id'];
+		$charity_total += (float)get_post_meta($post_id, 'charity_part', true);
+	}
+	$charity_total = number_format($charity_total, 2);
+	echo '<p>'. sprintf(__("The amount of %s € from your order will go to one of the organizations below. Please click on any of the logos to reveal more information about the organizations. A pop up will open with the detainls. To confirm selected organization click the 'select' button from the pop up.  Thank you.", 'paw'), $charity_total) . '</p>';
 	woocommerce_form_field(
 		'donation_organization',
 		array(
@@ -81,45 +88,43 @@ function paw_organizations_checkout_page_scripts_and_styles1()
 }
 
 
-
-
-// Add Variation Settings
-add_action( 'woocommerce_product_after_variable_attributes', 'hrx_variation_settings_fields', 10, 3 );
-
-// Save Variation Settings
-add_action( 'woocommerce_save_product_variation', 'hrx_save_variation_settings_fields', 10, 2 );
-
 /**
  * Create new fields for variations
  *
-*/
-function hrx_variation_settings_fields( $loop, $variation_data, $variation ) {
+ */
+function paw_variation_settings_fields($loop, $variation_data, $variation)
+{
 
 	// Text Field
 	woocommerce_wp_text_input(
 		array(
-			'id'          => '_print_file_link[' . $variation->ID . ']',
-			'label'       => __( 'Print File Link', 'woocommerce' ),
-			'placeholder' => 'http://',
-			'desc_tip'    => 'true',
-			'description' => __( 'Add your print file link here', 'woocommerce' ),
-			'value'       => get_post_meta( $variation->ID, '_print_file_link', true )
+			'id' => 'charity_part[' . $variation->ID . ']',
+			'label' => __('Ammount that goes to selected charity organization', 'paw'),
+			'placeholder' => '0.00',
+			'desc_tip' => 'true',
+			'description' => __('Make sure it number with decimal like 2.00', 'paw'),
+			'value' => get_post_meta($variation->ID, 'charity_part', true)
 		)
 	);
 
 }
 
+add_action('woocommerce_product_after_variable_attributes', 'paw_variation_settings_fields', 10, 3);
+
 /**
  * Save new fields for variations
  *
-*/
-function hrx_save_variation_settings_fields( $post_id ) {
+ */
+function paw_save_variation_settings_fields($post_id)
+{
 
 	// Text Field
-	$print_file_link = $_POST['_print_file_link'][ $post_id ];
-	if( ! empty( $print_file_link ) ) {
-		update_post_meta( $post_id, '_print_file_link', esc_attr( $print_file_link ) );
+	$charity_value = $_POST['charity_part'][$post_id];
+	if (!empty($charity_value)) {
+		update_post_meta($post_id, 'charity_part', esc_attr($charity_value));
 	}
 
 
 }
+
+add_action('woocommerce_save_product_variation', 'paw_save_variation_settings_fields', 10, 2);

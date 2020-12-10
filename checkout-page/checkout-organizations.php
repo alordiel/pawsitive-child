@@ -45,7 +45,7 @@ if ( ! empty($organizations)) {
 				  <div class="modal-body">
 				  	<p class="organization-subtitle">' . __('Total collected', 'paw') .': <span class="total-collected"></span></p>
 					<p class="modal-excerpt"></p>
-					<a class="modal-link-view-more" href="">(' . __( 'see more', 'paw' ) . ')</a>
+					<a class="modal-link-view-more" href="" target="_blank" rel="noreferrer noopener">(' . __( 'see more', 'paw' ) . ')</a>
 				  </div>
 				  <div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">' . __( 'Close', 'paw' ) . '</button>

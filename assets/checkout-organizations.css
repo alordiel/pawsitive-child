@@ -1,7 +1,15 @@
 .donation-organization-container {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     flex-wrap: wrap;
+}
+
+.single-organisation {
+    margin: 10px;
+}
+
+.donation-organization-container .single-organisation:first-child {
+  margin-left: 0;
 }
 
 #donation-organization-container {
